@@ -152,7 +152,7 @@ for picture in pics:
             
     imgRows = imgBW.shape[0] #Image height
     imgCols = imgBW.shape[1] #Image width
-    radius = imgRows/10 #NEED TO TEST OTHER VALUES
+    radius = imgRows/10 
     contourList = [];
     
     for idx in np.arange(len(contours)):
@@ -162,7 +162,7 @@ for picture in pics:
             colCnt = pt[0][0]
             check1 = (rowCnt >= imgRows-1-radius and rowCnt < imgRows)
             
-            #Identify all contours touching top edge withing radius
+            #Identify all contours touching top edge within radius
             if check1:
                 contourList.append(idx)
                 break
@@ -252,6 +252,9 @@ for picture in pics:
     distAdd = np.percentile(peakdist, 25)
     count = 0
     for a in peakdist:
+        if a < 0.5 * avgPeakDist:
+            locs = np.delete(locs, count+1)
+            count -= 1
         while a > avgPeakDist and locs[count+1] - locs[count] - distAdd > np.min(peakdist):
             locs = np.insert(locs, count+1, locs[count] + distAdd)
             a -= distAdd
@@ -259,10 +262,10 @@ for picture in pics:
         count+=1
             
     #View ecg peaks
-    #peakImg = ecgRegionBinary
-    #peakImg.T[locs] = 255
-    #filenamepeak = 'peaks' + str(countALL) + '.png'
-    #cv2.imwrite(filenamepeak, peakImg)
+    peakImg = ecgRegionBinary
+    peakImg.T[locs] = 255
+    filenamepeak = 'peaks' + str(countALL) + '.png'
+    cv2.imwrite(filenamepeak, peakImg)
     
     #Calculate beats-per-minute
     bpm = []

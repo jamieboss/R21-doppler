@@ -60,11 +60,15 @@ def parse(videoFile):
     
     #Create list of all video frames
     videoFrames = []
+    i = 0;
     while(vid.isOpened()):
         #Capture frame-by-frame
+        i += 1;
         ret, frame = vid.read()
         if ret:
             videoFrames.append(frame)
+            if i == 23:
+                cv2.imwrite('test.png', frame)
         else:
             break
     vid.release()
